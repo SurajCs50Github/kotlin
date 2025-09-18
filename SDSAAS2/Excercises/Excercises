@@ -1,0 +1,90 @@
+3) Reverse a stack (you may use extra stacks/queues)
+
+Goal: turn top↔bottom of a stack S.
+
+Idea (stack → queue → stack):
+
+Pop everything from S into a queue Q.
+Now the front of Q is the former top of S.
+
+Dequeue from Q back into S.
+Because queues give you items in the same order they were enqueued (old top first), pushing them back onto a stack flips their order: what was first dequeued ends up at the bottom of S, and what was last dequeued ends up at the top—i.e., reversed.
+
+Tiny example:
+S (top→bottom) = [5,4,3,2,1]
+Drain to Q: Q = [5,4,3,2,1] (front=5)
+Push back to S as you dequeue: S becomes [1,2,3,4,5] (reversed).
+
+Why it works: a queue preserves order; a stack reverses it on push. So “queue once + push once” gives you a flip.
+
+Complexity: O(n) time, O(n) extra space (for Q).
+Edge cases: empty or size-1 stack stays the same.
+
+4) Valid parentheses
+
+Goal: given a string of brackets, return true iff every opener has the right closer in the right order (properly nested).
+
+Idea (use a stack):
+
+Scan left to right.
+
+If you see an opener (, [, { → push it.
+
+If you see a closer ), ], } → pop; if the stack is empty or the popped opener doesn’t match the closer, return false.
+
+At the end, return true only if the stack is empty (everything matched).
+
+Examples:
+
+"{[()]}" → push {, [, (; then ) matches (, ] matches [, } matches { → empty at end → true.
+
+"([)]" → push (, [; see ) but top is [ → mismatch → false.
+
+")(" → first char is a closer with empty stack → false.
+
+"" (empty) → true (nothing to mismatch).
+
+Why it works: the most recent unmatched opener must be the first one to close—exactly what a stack models (LIFO).
+
+Complexity: O(n) time, O(n) space worst-case (all openers).
+
+5) Copy a stack using one queue (restore original)
+
+Goal: produce a new stack C with the same order as S and also leave S unchanged, using only one queue as extra storage.
+
+Trick: “rotate” a queue to pull items in the order we need.
+
+Steps:
+
+Drain S to queue Q, counting n.
+Now Q (front→back) holds S’s items from top→bottom.
+
+For i = 1..n:
+
+Rotate the queue (n - i) times: do Q.enqueue(Q.dequeue()) that many times.
+This moves the element we want next into the front.
+
+Dequeue x from Q.
+Push x onto both S (rebuilding S bottom→top) and C (building the copy in the same order).
+
+When you finish, S is exactly as it was, and C will pop in the same sequence as S.
+
+Why rotation works:
+After step 1, Q = [top, …, bottom].
+On the first iteration, rotating n-1 times brings the bottom element to the front. You push that first to S and C. Next iteration brings the next-from-bottom to the front, and so on. Thus you rebuild S bottom→top (restoring it) and build C with the same bottom→top—so C has the same order.
+
+Tiny example:
+S (top→bottom) = [4,3,2,1]
+Drain → Q=[4,3,2,1], n=4.
+
+i=1: rotate 3 → Q=[1,4,3,2]; pop 1; push to S and C.
+
+i=2: rotate 2 → Q=[3,2,4]; pop 3; push to S and C.
+
+i=3: rotate 1 → Q=[4,2]; pop 4; push to S and C.
+
+i=4: rotate 0 → Q=[2]; pop 2; push to S and C.
+End: S restored to [4,3,2,1], C identical.
+
+Complexity: O(n^2) time (because of rotations), O(n) extra space (one queue + the copy).
+Edge cases: empty or single-element stacks work trivially.

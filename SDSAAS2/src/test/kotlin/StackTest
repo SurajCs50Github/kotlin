@@ -1,0 +1,20 @@
+class LinkedListStackTest {
+    @Test
+    fun `stack follows LIFO order`() {
+        val stack = LinkedListStack<Int>()
+        assertTrue(stack.isEmpty())
+
+        stack.push(10)
+        stack.push(20)
+        stack.push(30)
+
+        assertFalse(stack.isEmpty())
+        assertEquals(30, stack.peek())
+        assertEquals(30, stack.pop())
+        assertEquals(20, stack.peek())
+        assertEquals(20, stack.pop())
+        assertEquals(10, stack.pop())
+        assertTrue(stack.isEmpty())
+        assertNull(stack.pop())
+    }
+}
